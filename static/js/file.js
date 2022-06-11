@@ -2,7 +2,7 @@ $(function(){
    $("#send").on("click", function(event){
      $("#send").prop("disabled", true);
      const query = $("#main").val();
-     $("#message").append("通信中です");
+     $("#message").append('通信中です');
      $.ajax({
        type: "POST",
        url: '{% url "youtube:ajax_search" %}',
