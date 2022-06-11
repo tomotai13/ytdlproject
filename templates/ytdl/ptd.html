@@ -1,0 +1,68 @@
+{% extends 'ytdl/base.html' %}
+
+
+{% load static %}
+{% block title %}わっきーダウンローダー{% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock css %}
+
+{% block js %}{% endblock js %}
+
+
+{% block content %}
+
+<div class="main">
+
+    <h1>  (・∀・) </h1>
+    <form id="ajax-number" action="{% url 'youtube:pytube'%}" method="post">
+
+    {% csrf_token %}
+    <div class="mb-3">{{ form }}</div>
+    <button type="reset" class="button">リセット</button>
+    <button type="button" class="button" id="button">ダウンロード</button>
+    <button type="submit" id="send" hidden></button>
+
+    </form>
+    <!--<h3 style="color:red;">システムエラー</h3>
+    <p style="color:#ff7f50; font-size:1.5rem;">ログを保存する処理を削除しました　サーバーに情報は保存されません</p>-->
+    {% if not video %}
+
+        <p>長いURLに対応しました！直接URLを貼り付けても大丈夫です!</p>
+
+    {% endif %}
+
+    {{ message }}
+
+    <div class="result">
+        {% if video %}
+
+           <p class="title">{{ title }}</p>
+           <video src="{{ video }}" controls autoplay muted playsinline style="width: 56vw;"></video>
+           <p><a href="{{ video }}" download="example.mp4">ダウンロード</a></p>
+           <p>※通信状況やサーバー側の状況によっては動画の受信ができなくなる可能性があります<br>見れない動画もあります</p>
+
+        {% endif %}
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $('#button').on('click', function() {
+        //const url = $("#url").val();
+        //if url.length !== 0 {
+       	$("#send").click();
+       	$("#button").attr('disabled', true);
+        //};
+    });
+</script>
+
+
+{% endblock content %}
+
+{% block jsfile %} {% endblock jsfile %}
+
+
+
+

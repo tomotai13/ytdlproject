@@ -1,0 +1,134 @@
+{% extends 'ytdl/base.html' %}
+
+
+{% load static %}
+{% block title %}ダウンローダー{% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock css %}
+
+{% block js %}{% endblock js %}
+
+
+{% block content %}
+
+<div class="main">
+
+    <h1> (・∀・) </h1>
+
+
+    <input type="text" minlength="1" id="main">
+
+    <button type="button" id="send" class="button">ダウンロードする</button>
+    <p>こちらのサイトは検索のみに対応しています</p>
+    <p style="color:#ff7f50; font-size:1.5rem;">ログを保存するプログラムを撤去しました サーバーに情報は保存されません</p>
+    <h4 id="message" style="color:red; display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>動画を取得中
+    </h4>
+    <!--<h3 style="color:#ff7f50;">システムエラー</h3>-->
+    <p>下に結果が表示されます<br>何度も画像をタップしないでください。裏では通信が行われており、何度もタップしてしまうことでその通信を阻害してしまいます。</p>
+
+    <details open style="display: none;">
+        <summary>
+            <span class="open">クリックで表示</span>
+            <span class="close">クリックで非表示</span>
+        </summary>
+    <div class="contents" id="return">
+    </div>
+    </details>
+    <div id="stream"></div>
+
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+    function send(){
+    $("#send").prop("disabled", true);
+    const value = $("#main").val();
+     $("#message").show();
+     return value;
+    }
+
+    function done(){
+       $("details").show();
+       $(".contents").empty();
+       $("#message").hide();
+       $("#send").prop("disabled", false);
+    }
+
+    function open(){
+        document.getElementsByTagName("details").open = true;
+    }
+
+
+    $(function(){
+   $("#send").on("click", function(event){
+     const query = send();
+     $.ajax({
+       type: "POST",
+       url: '{% url "youtube:ajax_search" %}',
+       data: { "query" : query },
+       dataType : "json"
+     }).done(function(data){
+       done();
+       open();
+       const d = JSON.parse(data);
+       for (let i = 0; i < d.length; i++) {
+           $("#return").append("<div class=\"item\"><img src=\"" + d[i].thumbnail_url + "\" class=\"img\" id=\"" + d[i].video_id + "\"/><p>" + d[i].title + "</p><button id=click hidden></button></div>");
+       }
+
+     }).fail(function(XMLHttpRequest, status, e){
+         alert(e);
+         $("#message").hide();
+     });
+   });
+ });
+
+
+$(function(){
+ $("body").on("click", ".img", function(event) {
+   const item_id = $(this).attr("id");
+    //(".item").prop("disabled", true);
+   $.ajax({
+       type: "POST",
+       url: '{% url "youtube:ajax_stream" %}',
+       data:{ "id" : item_id },
+       dataType : "json"
+     }).done(function(data){
+       const d = JSON.parse(data);
+       $("#stream").empty();
+       //$(".item").prop("disabled", false);
+       if (d.error == null){
+          $("#stream").append("<video src=\"" + d.stream_url + "\" controls autolay muted playsinline style=\"width: 56vw;\"></video><p><a href=\"" + d.stream_url + "\" download=\"example\">ダウンロード</a></p>");
+       }else{
+          $("#stream").append(d.error);
+       }
+     }).fail(function(XMLHttpRequest, status, e){
+       alert(e);
+     });
+   });
+  });
+
+  /*$.ajax({
+     success : function(response){
+         alert('成功');
+     },
+     error: function(){
+         //通信失敗時の処
+         alert('通信失敗');
+     }
+ });*/
+</script>
+
+{% endblock content %}
+
+{% block jsfile %}
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'js/file.js' %}"></script>-->
+{% endblock jsfile %}
+
+
