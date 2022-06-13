@@ -107,16 +107,18 @@ def a(request):
 @csrf_exempt
 def ajax_search(request):
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.body:
         try:
-            query = request.POST.get('query')
+            json_dict = json.loads(request.body)
+            query = json_dict['query']
+
             s = Search(query)
             dict_data = {}
             d = []
             for r in s.results:
-                dict_data['thumbnail_url'] = r.thumbnail_url
+                #dict_data['thumbnail_url'] = r.thumbnail_url
                 dict_data['video_id'] = r.video_id
-                #dict_data['thumbnail_url'] = 'https://i.ytimg.com/vi/' + r.video_id + '/default.jpg'
+                dict_data['thumbnail_url'] = 'https://i.ytimg.com/vi/' + r.video_id + '/sddefault.jpg'
                 dict_data['title'] = r.title
                 d.append(dict_data.copy())
         except:
@@ -161,18 +163,5 @@ def ajax_stream(request):
         d = json.dumps(d, ensure_ascii=False)
 
         return JsonResponse(d, safe=False)
-
-
-
-def b(request):
-    return render(request, 'presentation.html', {})
-
-
-
-
-
-
-
-
 
 

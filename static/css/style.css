@@ -1,4 +1,4 @@
-.main {
+#app {
     text-align:center;
 }
 video {
@@ -68,4 +68,13 @@ details:not([open]) .close {
 }
 details {
     margin-top: 1.5rem;
+}
+#message {
+    color:red; 
+}
+.message_hide {
+    display: none;
+}
+.message_show {
+    display: block;
 }
