@@ -14,7 +14,6 @@
 {% block content %}
 
 <div id="app">
-
     <h1> (・∀・) </h1>
 
     <input type="text" minlength="1" v-model="keyword">
@@ -26,9 +25,11 @@
             <span class="visually-hidden">Loading...</span>
         </div>動画を取得中
     </h4>
-    [[r_data]]
     <p>下に結果が表示されます<br>何度も画像をタップしないでください。裏では通信が行われており、何度もタップしてしまうことでその通信を阻害してしまいます。</p>
-    
+    <div v-for="video in videos" :key="video">
+        [[ video ]]
+    </div>
+    <hello-world v-bind:message="videos"></hello-world>
     <details open>
         <summary>
             <span class="open">クリックで表示</span>
@@ -45,13 +46,22 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script>
+
+  Vue.mixin({ delimiters: ["[[", "]]"] });
+
+  Vue.component('hello-world',{
+  template: '<img src=',
+  props: ['message']
+})
+
   let vm = new Vue({
     el:"#app",
     data:{
       isClick:false,
       keyword:"",
+      videos:[],
     },
-    delimiters: ["[[","]]"], 
+    //delimiters: ["[[","]]"],
 
     methods:{
       send: function() {
@@ -66,7 +76,8 @@
           $("#return").empty();
           d = JSON.parse(response.data);
           for (let i = 0; i < d.length; i++) {
-           $("#return").append("<div class=\"item\"><img src=\"" + d[i].thumbnail_url + "\" class=\"img\" id=\"" + d[i].video_id + "\"/><p>" + d[i].title + "</p></div>");
+              this.videos.push(d[i])
+           //$("#return").append("<div class=\"item\"><img src=\"" + d[i].thumbnail_url + "\" class=\"img\" id=\"" + d[i].video_id + "\"/><p>" + d[i].title + "</p></div>");
        }
        this.isClick = false;
         })

@@ -118,7 +118,7 @@ def ajax_search(request):
             for r in s.results:
                 #dict_data['thumbnail_url'] = r.thumbnail_url
                 dict_data['video_id'] = r.video_id
-                dict_data['thumbnail_url'] = 'https://i.ytimg.com/vi/' + r.video_id + '/sddefault.jpg'
+                dict_data['thumbnail_url'] = 'https://i.ytimg.com/vi/' + r.video_id + '/mqdefault.jpg'
                 dict_data['title'] = r.title
                 d.append(dict_data.copy())
         except:
