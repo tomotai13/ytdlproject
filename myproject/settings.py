@@ -136,6 +136,7 @@ LOGGING = {
             'maxBytes': 10000,
             'backupCount':10,
             'formatter':'standard',
+            'encoding':'utf-8',
         },
     },
     'loggers': {

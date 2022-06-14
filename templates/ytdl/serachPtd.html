@@ -26,10 +26,7 @@
         </div>動画を取得中
     </h4>
     <p>下に結果が表示されます<br>何度も画像をタップしないでください。裏では通信が行われており、何度もタップしてしまうことでその通信を阻害してしまいます。</p>
-    <div v-for="video in videos" :key="video">
-        [[ video ]]
-    </div>
-    <hello-world v-bind:message="videos"></hello-world>
+    <video-list v-for="video in videos" :key="video.id" v-bind:title="video.title" v-bind:thumbnail="video.thumbnail_url"></video-list>
     <details open>
         <summary>
             <span class="open">クリックで表示</span>
@@ -49,9 +46,9 @@
 
   Vue.mixin({ delimiters: ["[[", "]]"] });
 
-  Vue.component('hello-world',{
-  template: '<img src=',
-  props: ['message']
+  Vue.component('video-list',{
+  template: `<div class="item"><img class="img" v-bind:src="video.thumbnail_url"><p>[[ title ]]</p></div>`,
+  props: ['title']
 })
 
   let vm = new Vue({
@@ -73,11 +70,10 @@
       };
       axios.post("{% url 'youtube:ajax_search' %}", data, {headers: headers})
         .then(response => {
-          $("#return").empty();
+          this.videos.splice(0, this.videos.length)
           d = JSON.parse(response.data);
           for (let i = 0; i < d.length; i++) {
               this.videos.push(d[i])
-           //$("#return").append("<div class=\"item\"><img src=\"" + d[i].thumbnail_url + "\" class=\"img\" id=\"" + d[i].video_id + "\"/><p>" + d[i].title + "</p></div>");
        }
        this.isClick = false;
         })
