@@ -137,7 +137,8 @@ def ajax_stream(request):
     if request.method == "POST":
 
         d = {'error':None,}
-        id = request.POST.get('id')
+        json_dict = json.loads(request.body)
+        id = json_dict['video_id']
         if len(id) == 11:
             url = 'https://www.youtube.com/watch?v={}'.format(id)
 

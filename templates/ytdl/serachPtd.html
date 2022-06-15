@@ -18,7 +18,7 @@
 
     <input type="text" minlength="1" v-model="keyword">
 
-    <button type="button" class="button" id="send" v-on:click="send">ダウンロードする</button>
+    <button type="button" class="button" id="send" @click="send">ダウンロードする</button>
     <p v-show="!isClick">こちらのサイトは検索に対応しています</p>
     <h4 id="message" v-show="isClick">
         <div class="spinner-border text-primary" role="status">
@@ -26,16 +26,21 @@
         </div>動画を取得中
     </h4>
     <p>下に結果が表示されます<br>何度も画像をタップしないでください。裏では通信が行われており、何度もタップしてしまうことでその通信を阻害してしまいます。</p>
-    <video-list v-for="video in videos" :key="video.id" v-bind:title="video.title" v-bind:thumbnail="video.thumbnail_url"></video-list>
     <details open>
         <summary>
             <span class="open">クリックで表示</span>
             <span class="close">クリックで非表示</span>
         </summary>
     <div class="contents" id="return">
+        <div class="item" v-for="video in videos" :key="video.id">
+            <img class="img"  v-bind:id="[[ video.video_id ]]" v-bind:src="[[ video.thumbnail_url ]]" @click="images">
+            <p v-show="!isClick">[[ video.title ]]</p><p v-show="isClick">Loding...</p>
+    </div>
     </div>
     </details>
-    <div id="stream"></div>
+    <div id="stream" v-for="stream in streams">
+        <video v-bind:src="[[ stream.stream_url ]]" controls autolay muted playsinline style="width: 56vw;"></video>
+    </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -43,22 +48,16 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script>
+    Vue.mixin({ delimiters: ["[[", "]]"] });
 
-  Vue.mixin({ delimiters: ["[[", "]]"] });
-
-  Vue.component('video-list',{
-  template: `<div class="item"><img class="img" v-bind:src="video.thumbnail_url"><p>[[ title ]]</p></div>`,
-  props: ['title']
-})
-
-  let vm = new Vue({
+let vm = new Vue({
     el:"#app",
     data:{
       isClick:false,
       keyword:"",
       videos:[],
+      streams:[],
     },
-    //delimiters: ["[[","]]"],
 
     methods:{
       send: function() {
@@ -72,22 +71,37 @@
         .then(response => {
           this.videos.splice(0, this.videos.length)
           d = JSON.parse(response.data);
+          this.isClick = false;
           for (let i = 0; i < d.length; i++) {
               this.videos.push(d[i])
        }
-       this.isClick = false;
         })
         .catch(function (error) {
           alert(error);
         });
       },
 
-      images: function() {
-        alert("click!")
-      }
+      images: function(event) {
+        this.isClick = true;
+        const id = event.path[0].id;
+        csrftoken = Cookies.get('csrftoken');
+        headers = {'X-CSRFToken': csrftoken};
+        data = {
+            video_id:id,
+        };
+        axios.post("{% url 'youtube:ajax_stream' %}", data, {headers: headers})
+        .then(response => {
+         this.streams.splice(0, this.streams.length);
+         d = JSON.parse(response.data);
+         this.streams.push(d);
+         this.isClick = false;
+        })
+        .catch(function (error) {
+          alert(error);
+        });
     }
-  })
-
+    }
+  });
 </script>
 {% endblock content %}
 
