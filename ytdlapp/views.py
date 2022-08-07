@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 #from third party
-import youtube_dl
+
 from pytube import YouTube, Search
 
 #from other file
@@ -18,43 +18,6 @@ import re
 #import sys
 
 logger = logging.getLogger('ytdlapp')
-
-# Create your views here.
-def helloworld(request):
-    context={'form': UrlForm(),'video_url':'','video_title':'','video_title_ext':'','message':'',}
-
-    if request.method == 'POST':
-        try:
-            url = request.POST.get('url')
-            if 'https://www.youtube.com/watch?v=' in url or 'https://m.youtube.com/watch?v=' in url:
-
-                output_file_name = 'a'
-                ydl_opts = {
-                    'format':'bestvideo+bestaudio/best',
-                    'outtmpl':output_file_name + '.%(ext)s',
-                }
-
-                ydl = youtube_dl.YoutubeDL(ydl_opts)
-                result = ydl.extract_info(url, download=False)
-                formats = result['formats']
-                formats2 =[]
-                i = 0
-                for format in formats:
-                    if (format['acodec'] != 'none') and (format['vcodec'] != 'none'):
-                        i += 1
-                        formats2.append(format)
-                format2 = formats2[i-1]
-
-                context['video_url'] = format2['url']
-                context['video_title'] = result['title']
-            else:
-                context['message'] = '正しいURLを入力してください'
-        except:
-            context['message'] = 'エラーが発生しました'
-
-    return render(request, 'ytdl/ytdl.html', context)
-
-
 
 def pytubeView(request):
     context={'form':UrlForm(), 'video':'', 'message':'','title':'',}
@@ -100,7 +63,7 @@ def pytubeView(request):
     return render(request, 'ytdl/ptd.html', context)
 
 
-def a(request):
+def search(request):
     return render(request, 'ytdl/serachPtd.html',{})
 
 
