@@ -120,35 +120,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters':{
-        'standard':{
-            'format' : " [%(asctime)s] [%(levelname)s] %(funcName)s %(message)s",
-        },
-    },
-    'handlers': {
-        'file': {   # ログのローテーションの設定
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR,'logfile/logfile.log'),
-            'maxBytes': 10000,
-            'backupCount':10,
-            'formatter':'standard',
-            'encoding':'utf-8',
-        },
-    },
-    'loggers': {
-        'ytdlapp': {
-            'handlers': ['file',],
-            'level': 'INFO',
-            'propagate': False,
-        }
-    },
-}
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
