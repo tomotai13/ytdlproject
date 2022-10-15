@@ -1,1 +1,1 @@
-web: gunicorn tydlproject.wsgi
+web: gunicorn ytdlproject.wsgi
