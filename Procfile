@@ -1,1 +1,1 @@
-web: gunicorn djangoCalendarApp.wsgi
+web: gunicorn tydlproject.wsgi
