@@ -5,7 +5,92 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <style>
+      #app {
+    text-align:center;
+}
+.main {
+    text-align:center;
+}
+video {
+    width:53vw;
+}
+body {
+    background-color: #EEFFFF;
+    /*background-color: black;*/
+}
+.button {
+  /* ブラウザ特有のスタイルを無効に */
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
 
+  /* 整える */
+  margin: 1em 0; /* 前後の隙間 */
+  padding: 0.6em 1em; /* 塗りの余白 */
+  font-size: 1em; /* フォントサイズ */
+  background-color: #1aa1ff; /* 背景色 */
+  color: #FFF; /* テキストカラー */
+  cursor: pointer; /* カーソルを指マークに */
+  border-radius: 3px; /* 角の丸み */
+  border: 0; /* 枠線を消す */
+  transition: 0.3s; /* ホバーの変化を滑らかに */
+}
+
+/* ホバー時（カーソルをのせた時）の見た目 */
+.button:hover {
+  background-color: #064fda; /* 背景色 */
+}
+.button {
+    margin: 10px;
+}
+.title {
+  margin-top: 2.5rem;
+  font-size: 1.35rem;
+}
+.result {
+    margin-top:2.5rem;
+}
+.contents {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    margin: 30px 0;
+    padding-top: 30px;
+    text-align: center;
+}
+.item {
+    width: calc(100% / 4 - 30px);
+    margin-bottom: 2rem;
+    padding: 0px 10px;
+    text-align: center;
+    /*background-color:orange;*/
+    border-bottom: 1px solid black;
+}
+img {
+    width:20vw;
+}
+details[open] .open {
+    display: none ;
+}
+details:not([open]) .close {
+    display: none ;
+}
+details {
+    margin-top: 1.5rem;
+}
+#message {
+    color:red;
+}
+.message_hide {
+    display: none;
+}
+.message_show {
+    display: block;
+}
+
+    </style>
     <title>{% block title %}{% endblock title %}</title>
     {% block css %}{% endblock css %}
     {% block js %}
