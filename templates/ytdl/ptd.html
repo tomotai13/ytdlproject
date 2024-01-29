@@ -2,7 +2,7 @@
 
 
 {% load static %}
-{% block title %}わっきーダウンローダー{% endblock title %}
+{% block title %}URLのみ対応{% endblock title %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -15,7 +15,7 @@
 
 <div class="main">
 
-    <h1>  (・∀・) </h1>
+    <h1>  ダウンローダー </h1>
     <form id="ajax-number" action="{% url 'youtube:pytube'%}" method="post">
 
     {% csrf_token %}
@@ -25,8 +25,8 @@
     <button type="submit" id="send" hidden></button>
 
     </form>
-    <!--<h3 style="color:red;">システムエラー</h3>
-    <p style="color:#ff7f50; font-size:1.5rem;">ログを保存する処理を削除しました　サーバーに情報は保存されません</p>-->
+    <!--<h3 style="color:red;">システムエラー</h3>-->
+    
     {% if not video %}
 
         <p>長いURLに対応しました！直接URLを貼り付けても大丈夫です!</p>
