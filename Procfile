@@ -1,1 +1,0 @@
-web: gunicorn ytdlproject.wsgi

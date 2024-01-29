@@ -1,8 +1,9 @@
-#from django
+ #from django
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect
 
 #from third party
 
@@ -69,7 +70,9 @@ def search(request):
 
 @csrf_exempt
 def ajax_search(request):
-
+    if request.method == "GET":
+        return redirect('/ytdl/search-url/', permanent=True)
+    
     if request.method == 'POST' and request.body:
         try:
             json_dict = json.loads(request.body)
@@ -91,16 +94,21 @@ def ajax_search(request):
             logger.info(query)
 
         d = json.dumps(d, ensure_ascii=False)
+        print(d)
 
         return JsonResponse(d, safe=False)
 
 
 @csrf_exempt
 def ajax_stream(request):
+    if request.method == "GET":
+        return redirect('/ytdl/search-url/', permanent=True)
+    
     if request.method == "POST":
 
         d = {'error':None,}
         json_dict = json.loads(request.body)
+
         id = json_dict['video_id']
         if len(id) == 11:
             url = 'https://www.youtube.com/watch?v={}'.format(id)

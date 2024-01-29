@@ -20,6 +20,7 @@
 
     <button type="button" class="button" id="send" @click="send">ダウンロードする</button>
     <p v-show="!isClick">こちらのサイトは検索に対応しています</p>
+    <a href="{% url 'youtube:pytube' %}">URLを直接貼り付けたい場合はこちら</a>
     <h4 id="message" v-show="isClick">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -40,6 +41,7 @@
     </details>
     <div id="stream" v-for="stream in streams">
         <video v-bind:src="[[ stream.stream_url ]]" controls autolay muted playsinline style="width: 56vw;"></video>
+        <p><a v-bind:href="[[ stream.stream_url ]]" download="example.mp4">ダウンロード</a></p>
     </div>
 </div>
 
@@ -81,9 +83,11 @@ let vm = new Vue({
         });
       },
 
+
       images: function(event) {
         this.isClick = true;
-        const id = event.path[0].id;
+        //console.log(event);
+        const id = event.target.id;
         csrftoken = Cookies.get('csrftoken');
         headers = {'X-CSRFToken': csrftoken};
         data = {
@@ -91,6 +95,7 @@ let vm = new Vue({
         };
         axios.post("{% url 'youtube:ajax_stream' %}", data, {headers: headers})
         .then(response => {
+
          this.streams.splice(0, this.streams.length);
          d = JSON.parse(response.data);
          this.streams.push(d);

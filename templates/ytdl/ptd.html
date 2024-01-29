@@ -30,6 +30,7 @@
     {% if not video %}
 
         <p>長いURLに対応しました！直接URLを貼り付けても大丈夫です!</p>
+        <a href="{% url 'youtube:a' %}">検索可能サイトはこちら</a>
 
     {% endif %}
 
@@ -42,7 +43,7 @@
            <video src="{{ video }}" controls autoplay muted playsinline style="width: 56vw;"></video>
            <p><a href="{{ video }}" download="example.mp4">ダウンロード</a></p>
            <p>※通信状況やサーバー側の状況によっては動画の受信ができなくなる可能性があります<br>見れない動画もあります</p>
-
+           
         {% endif %}
     </div>
 
