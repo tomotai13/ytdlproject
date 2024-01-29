@@ -94,7 +94,6 @@ def ajax_search(request):
             logger.info(query)
 
         d = json.dumps(d, ensure_ascii=False)
-        print(d)
 
         return JsonResponse(d, safe=False)
 
