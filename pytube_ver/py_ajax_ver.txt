@@ -1,0 +1,21 @@
+#pytubeを使うときのajaxの方のコード
+
+url = ""
+
+if 'https' in url or 'youtu' in url:
+    try:
+        try:
+            streams = YouTube(url).streams
+            stream = streams.get_by_itag(22)
+            d['stream_url'] = stream.url
+            d['stream_title'] = stream.title
+        except:
+            streams = YouTube(url).streams
+            stream = streams.get_by_itag(18)
+            d['stream_url'] = stream.url
+            d['stream_title'] = stream.title
+    except:
+        d['error'] = 'error'
+        logger.error(url)
+    else:
+        logger.info(d['stream_title'])

@@ -7,3 +7,4 @@ gunicorn
 psycopg2-binary
 whitenoise
 pytube
+yt-dlp

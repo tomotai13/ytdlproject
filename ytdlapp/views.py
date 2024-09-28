@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 #from third party
 
 from pytube import YouTube, Search
+from yt_dlp import YoutubeDL
 
 #from other file
 from .forms import UrlForm
@@ -16,9 +17,26 @@ from .forms import UrlForm
 import json
 import logging
 import re
-#import sys
 
 logger = logging.getLogger('ytdlapp')
+
+#define yt-dlp-ver code
+def confine_video(url):
+    array = []
+    ops = {
+        'skip_download':True
+    }
+    with YoutubeDL(ops) as ydl:
+        res = ydl.extract_info(url)
+        array = res
+    formats = array["formats"]
+    ok_video2 = []
+    for el in formats:
+        if (el['ext'] == "mp4") and (not bool(el.get("manifest_url"))) and (el["acodec"] != 'none'):
+            ok_video2.append(el)
+
+    return ok_video2
+
 
 def pytubeView(request):
     context={'form':UrlForm(), 'video':'', 'message':'','title':'',}
@@ -40,24 +58,18 @@ def pytubeView(request):
 
         if 'https:' in check_url and 'youtu' in check_url:
             try:
-                try:
-                    streams = YouTube(url).streams
-                    stream = streams.get_by_itag(22)
-                    context['video'] = stream.url
-                    context['title'] = stream.title
-
-                except:
-                    streams = YouTube(url).streams
-                    stream = streams.get_by_itag(18)
-                    context['video'] = stream.url
-                    context['title'] = stream.title
-
+                result = confine_video(url)
+                selected_video = result[len(result)-1]
+                
+                context['video'] = selected_video.get("url")
+                context['title'] = "video title is not loaded"
             except Exception as e:
                 context['message'] = e
                 logger.error(e)
 
             else:
-                logger.info(context['title'])
+                #logger.info(context['title'])
+                pass
         else:
             context['message'] = '正しいURLを入力してください'
 
@@ -114,21 +126,18 @@ def ajax_stream(request):
 
         if 'https' in url or 'youtu' in url:
             try:
-                try:
-                    streams = YouTube(url).streams
-                    stream = streams.get_by_itag(22)
-                    d['stream_url'] = stream.url
-                    d['stream_title'] = stream.title
-                except:
-                    streams = YouTube(url).streams
-                    stream = streams.get_by_itag(18)
-                    d['stream_url'] = stream.url
-                    d['stream_title'] = stream.title
+                result = confine_video(url)
+                selected_video = result[len(result)-1]
+                
+                d['stream_url'] = selected_video.get("url")
+                d['stream_title'] = "video title is not loaded"
+                
             except:
                 d['error'] = 'error'
                 logger.error(url)
             else:
-                logger.info(d['stream_title'])
+                #logger.info(d['stream_title'])
+                pass
 
 
         d = json.dumps(d, ensure_ascii=False)
